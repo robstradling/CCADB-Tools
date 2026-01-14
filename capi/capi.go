@@ -480,7 +480,12 @@ func lintSubject(subject string) model.ChainLintResult {
 		})
 		return result
 	}
-	chainWithoutRoot := chain[:len(chain)-1]
+	var chainWithoutRoot []*x509.Certificate
+	if certificateUtils.IncludesTrustAnchor(chain) {
+		chainWithoutRoot = chain[:len(chain)-1]
+	} else {
+		chainWithoutRoot = chain
+	}
 	clint, err := certlint.LintCerts(chainWithoutRoot)
 	if err != nil {
 		result.Error = err.Error()
