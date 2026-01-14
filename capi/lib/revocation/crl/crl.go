@@ -48,8 +48,8 @@ func queryCRLs(certificate *x509.Certificate) []CRL {
 		statuses[i] = newCRL(certificate.SerialNumber, url)
 	}
 	if disagreement := allAgree(statuses); disagreement != nil {
-		for _, status := range statuses {
-			status.Error = disagreement.Error()
+		for i := 0; i < len(statuses); i++ {
+			statuses[i].Error = disagreement.Error()
 		}
 	}
 	return statuses
