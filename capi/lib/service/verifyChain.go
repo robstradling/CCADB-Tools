@@ -34,10 +34,10 @@ func VerifyChain(chain []*x509.Certificate) model.ChainResult {
 	}
 	ocsps := ocsp.VerifyChain(chain)
 	crls := crl.VerifyChain(chain)
-	result.Leaf = model.NewCeritifcateResult(chain[0], ocsps[0], crls[0], expirations[0])
+	result.Leaf = model.NewCertificateResult(chain[0], ocsps[0], crls[0], expirations[0])
 
 	ca := len(chain) - 1
-	result.Root = model.NewCeritifcateResult(chain[ca], ocsps[ca], crls[ca], expirations[ca])
+	result.Root = model.NewCertificateResult(chain[ca], ocsps[ca], crls[ca], expirations[ca])
 
 	// Just a leaf and its root, no intermediates.
 	if len(chain) <= 2 {
@@ -46,7 +46,7 @@ func VerifyChain(chain []*x509.Certificate) model.ChainResult {
 
 	result.Intermediates = make([]model.CertificateResult, len(chain[1:len(chain)-1]))
 	for i := 1; i < len(chain)-1; i++ {
-		result.Intermediates[i-1] = model.NewCeritifcateResult(chain[i], ocsps[i], crls[i], expirations[i])
+		result.Intermediates[i-1] = model.NewCertificateResult(chain[i], ocsps[i], crls[i], expirations[i])
 	}
 
 	return result
