@@ -101,7 +101,7 @@ func NewCeritifcateResult(certificate *x509.Certificate, ocspResonse []ocsp.OCSP
 	return CertificateResult{
 		certificate,
 		certificateUtils.FingerprintOf(certificate),
-		"https://crt.sh/?q=" + certificateUtils.FingerprintOf(certificate),
+		"https://crt.sh/?sha256=" + certificateUtils.FingerprintOf(certificate),
 		certificate.Subject.CommonName,
 		ocspResonse,
 		crlStatus,

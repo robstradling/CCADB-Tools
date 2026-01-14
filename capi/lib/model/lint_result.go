@@ -109,6 +109,6 @@ func NewCertificateLintResult(original *x509.Certificate, X509 x509lint.X509Lint
 	return CertificateLintResult{
 		X509Lint: X509,
 		Certlint: clint,
-		CrtSh:    "https://crt.sh/?q=" + certificateUtils.FingerprintOf(original),
+		CrtSh:    "https://crt.sh/?sha256=" + certificateUtils.FingerprintOf(original),
 	}
 }
