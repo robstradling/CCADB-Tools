@@ -487,7 +487,7 @@ func lintSubject(subject string) model.ChainLintResult {
 		result.Opinion.Result = model.FAIL
 		result.Opinion.Errors = append(result.Opinion.Errors, model.Concern{
 			Raw:            err.Error(),
-			Interpretation: "An internal error appears to have occurred while using certlint",
+			Interpretation: "An internal error appears to have occurred while using pkimetal",
 			Advise:         "Please report this error.",
 		})
 		return result
