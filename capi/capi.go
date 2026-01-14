@@ -448,10 +448,10 @@ func lintFromSubject(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	result := lintSubject(s[0])
+	w.Header().Set("Content-Type", "application/json")
 	encoder := json.NewEncoder(w)
 	encoder.SetIndent("", "  ")
 	encoder.Encode(result)
-	w.WriteHeader(http.StatusOK)
 }
 
 func lintSubject(subject string) model.ChainLintResult {
