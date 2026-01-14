@@ -2,6 +2,7 @@ package model
 
 import (
 	"crypto/x509"
+
 	"github.com/mozilla/CCADB-Tools/capi/lib/certificateUtils"
 	"github.com/mozilla/CCADB-Tools/capi/lib/lint/certlint"
 	"github.com/mozilla/CCADB-Tools/capi/lib/lint/x509lint"

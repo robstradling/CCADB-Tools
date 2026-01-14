@@ -9,11 +9,12 @@ import (
 	"crypto"
 	"crypto/x509"
 	"fmt"
-	"github.com/pkg/errors"
 	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
+
+	"github.com/pkg/errors"
 )
 
 type Fingerprint = string

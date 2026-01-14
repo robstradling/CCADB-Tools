@@ -6,11 +6,12 @@ package x509lint
 
 import (
 	"crypto/x509"
-	go_x509lint "github.com/crtsh/go-x509lint"
 	"log"
 	"reflect"
 	"strings"
 	"sync"
+
+	go_x509lint "github.com/crtsh/go-x509lint"
 )
 
 type X509Lint struct {
