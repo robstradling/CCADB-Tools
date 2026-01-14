@@ -11,7 +11,7 @@ import (
 	"encoding/pem"
 	"github.com/mozilla/CCADB-Tools/capi/lib/certificateUtils"
 	"golang.org/x/crypto/ocsp"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"testing"
 )
@@ -384,7 +384,7 @@ func responseAsBytes(certificate, issuer *x509.Certificate, responder string) []
 		panic(err)
 	}
 	defer ret.Body.Close()
-	httpResp, err := ioutil.ReadAll(ret.Body)
+	httpResp, err := io.ReadAll(ret.Body)
 	if err != nil {
 		panic(err)
 	}

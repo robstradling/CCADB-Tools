@@ -8,7 +8,7 @@ import (
 	"crypto/x509"
 	"fmt"
 	"github.com/pkg/errors"
-	"io/ioutil"
+	"io"
 	"math/big"
 	"net/http"
 	"strings"
@@ -97,7 +97,7 @@ func newCRL(serialNumber *big.Int, distributionPoint string) (crl CRL) {
 		crl.Status = BadResponse
 		return
 	}
-	b, err := ioutil.ReadAll(raw.Body)
+	b, err := io.ReadAll(raw.Body)
 	if err != nil {
 		crl.Error = errors.Wrapf(err, "failed to read response from CRL distribution point %v", distributionPoint).Error()
 		crl.Status = BadResponse
