@@ -14,9 +14,9 @@ type Status string
 
 const (
 	Valid              Status = "valid"
-	Expired                   = "expired"
-	IssuerUnknown             = "issuerUnknown"
-	UnexpectedResponse        = "unexpectedResponse"
+	Expired            Status = "expired"
+	IssuerUnknown      Status = "issuerUnknown"
+	UnexpectedResponse Status = "unexpectedResponse"
 )
 
 func toStatus(nssResponse string) (Status, bool) {
