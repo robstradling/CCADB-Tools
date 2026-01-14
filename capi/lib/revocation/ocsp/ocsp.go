@@ -9,7 +9,9 @@ import (
 	"crypto/x509"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"github.com/pkg/errors"
+	ocsplib "golang.org/x/crypto/ocsp"
+	"io"
 	"net/http"
 	"regexp"
 	"strings"
@@ -200,7 +202,7 @@ func newOCSPResponse(certificate, issuer *x509.Certificate, responder string) (r
 		return
 	}
 	defer ret.Body.Close()
-	httpResp, err := ioutil.ReadAll(ret.Body)
+	httpResp, err := io.ReadAll(ret.Body)
 	if err != nil {
 		response.Status = BadResponse
 		response.Error = err.Error()

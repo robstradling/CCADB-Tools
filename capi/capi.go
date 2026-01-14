@@ -11,7 +11,6 @@ import (
 	"encoding/pem"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net"
 	"net/http"
 	"net/http/httputil"
@@ -132,7 +131,7 @@ func verify(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 	subject := s[0]
-	rawRoot, err := ioutil.ReadAll(req.Body)
+	rawRoot, err := io.ReadAll(req.Body)
 	if err != nil {
 		responseCode = http.StatusBadRequest
 		response = "failed to read request body, " + err.Error()
@@ -266,7 +265,7 @@ func streamJsonArray(w io.Writer, answers chan model.TestWebsiteResult, total in
 }
 
 func verifyFromCertificateDetails(resp http.ResponseWriter, req *http.Request) {
-	body, err := ioutil.ReadAll(req.Body)
+	body, err := io.ReadAll(req.Body)
 	if err != nil {
 		//@TODO
 	}
@@ -381,7 +380,7 @@ func lintFromCCADB(resp http.ResponseWriter, _ *http.Request) {
 }
 
 func lintFromCertificateDetails(resp http.ResponseWriter, req *http.Request) {
-	body, err := ioutil.ReadAll(req.Body)
+	body, err := io.ReadAll(req.Body)
 	if err != nil {
 		//@TODO
 	}
