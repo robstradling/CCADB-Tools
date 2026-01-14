@@ -97,7 +97,7 @@ type CertificateResult struct {
 	Expiration        expiration.ExpirationStatus
 }
 
-func NewCeritifcateResult(certificate *x509.Certificate, ocspResonse []ocsp.OCSP, crlStatus []crl.CRL, expirationStatus expiration.ExpirationStatus) CertificateResult {
+func NewCertificateResult(certificate *x509.Certificate, ocspResonse []ocsp.OCSP, crlStatus []crl.CRL, expirationStatus expiration.ExpirationStatus) CertificateResult {
 	return CertificateResult{
 		certificate,
 		certificateUtils.FingerprintOf(certificate),
