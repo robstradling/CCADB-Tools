@@ -107,7 +107,6 @@ func lint(fname, tool string) certlint {
 	return result
 }
 
-//
 // B: Bug. Your certificate has a feature not handled by certlint.
 // I: Information. These are purely informational; no action is needed.
 // N: Notice. These are items known to cause issues with one or more implementations of certificate processing but are not errors according to the standard.

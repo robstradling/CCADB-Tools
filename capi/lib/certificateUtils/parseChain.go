@@ -11,11 +11,12 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"net/http"
 	"regexp"
 	"strings"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 const (
