@@ -3,6 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 FROM golang:latest AS buildStage
+ENV CGO_ENABLED=0
 
 WORKDIR /opt
 COPY . .
