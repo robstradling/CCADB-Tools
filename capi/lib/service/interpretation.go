@@ -111,8 +111,8 @@ type CertType string
 
 const (
 	Root         CertType = "root"
-	Intermediate          = "intermediate"
-	Leaf                  = "leaf"
+	Intermediate CertType = "intermediate"
+	Leaf         CertType = "leaf"
 )
 
 func assertNotRevoked(cert model.CertificateResult, t CertType) (opinion model.Opinion) {

@@ -20,9 +20,9 @@ type CRLStatus string
 
 const (
 	Good        CRLStatus = "good"
-	Revoked               = "revoked"
-	Unchecked             = "unchecked"
-	BadResponse           = "badResponse"
+	Revoked     CRLStatus = "revoked"
+	Unchecked   CRLStatus = "unchecked"
+	BadResponse CRLStatus = "badResponse"
 )
 
 type CRL struct {
