@@ -361,7 +361,7 @@ func TestBadASN1(t *testing.T) {
 		t.Fatal(err)
 	}
 	s := bytes.NewBuffer([]byte{})
-	pem.Encode(s, &pem.Block{"CERTIFICATE", nil, chain[0].Raw})
+	pem.Encode(s, &pem.Block{Type: "CERTIFICATE", Bytes: chain[0].Raw})
 	t.Log(s.String())
 	b := responseAsBytes(chain[0], chain[1], chain[0].OCSPServer[0])
 	t.Log(chain[0].OCSPServer[0])
