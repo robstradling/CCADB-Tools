@@ -11,7 +11,7 @@ RUN go build capi.go
 FROM debian:latest
 
 RUN apt update
-RUN apt install -y libnss3-tools
+RUN apt install -y libnss3-tools ca-certificates
 
 COPY --from=buildStage /opt/ /tmp/
 RUN mv /tmp/capi /opt/
