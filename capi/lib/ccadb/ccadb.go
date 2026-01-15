@@ -10,15 +10,16 @@ import (
 	"encoding/csv"
 	"encoding/pem"
 	"fmt"
+	"net/http"
+
 	"github.com/mozilla/CCADB-Tools/capi/lib/certificateUtils"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
-	"net/http"
 )
 
 const ReportURL = "https://ccadb.my.salesforce-sites.com/mozilla/IncludedCACertificateReportPEMCSV"
 
-var headers = []string{"Owner", "Certificate Issuer Organization", "Certificate Issuer Organizational Unit", "Common Name or Certificate Name", "Certificate Serial Number", "SHA-256 Fingerprint", "Subject + SPKI SHA256", "Valid From [GMT]", "Valid To [GMT]", "Public Key Algorithm", "Signature Hash Algorithm", "Trust Bits", "Distrust for TLS After Date", "Distrust for S/MIME After Date", "EV Policy OID(s)", "Approval Bug", "NSS Release When First Included", "Firefox Release When First Included", "Test Website - Valid", "Test Website - Expired", "Test Website - Revoked", "Mozilla Applied Constraints", "Company Website", "Geographic Focus", "Certificate Policy (CP)", "Certification Practice Statement (CPS)", "Standard Audit", "BR Audit", "EV Audit", "Auditor", "Standard Audit Type", "Standard Audit Statement Dt", "PEM Info"}
+var headers = []string{"Owner", "Certificate Issuer Organization", "Certificate Issuer Organizational Unit", "Common Name or Certificate Name", "Certificate Serial Number", "SHA-256 Fingerprint", "Subject + SPKI SHA256", "Valid From [GMT]", "Valid To [GMT]", "Public Key Algorithm", "Signature Hash Algorithm", "Trust Bits", "Distrust for TLS After Date", "Distrust for S/MIME After Date", "EV Policy OID(s)", "Approval Bug", "NSS Release When First Included", "Firefox Release When First Included", "Test Website - Valid", "Test Website - Expired", "Test Website - Revoked", "Mozilla Applied Constraints", "Company Website", "Geographic Focus", "Certificate Policy (CP)", "Certification Practice Statement (CPS)", "Certificate Practice & Policy Statement (CP/CPS)", "Markdown/AsciiDoc CP/CPS", "Standard Audit", "NetSec Audit", "TLS BR Audit", "TLS EVG Audit", "S/MIME BR Audit", "Audit Firm", "Standard Audit Type", "Standard Audit Statement Dt", "PEM Info"}
 
 const (
 	Owner = iota
@@ -47,10 +48,14 @@ const (
 	GeographicFocus
 	CertificatePolicyCP
 	CertificationPracticeStatementCPS
+	CertificatePracticePolicyStatementCPCPS
+	MarkdownAsciiDocCPCPS
 	StandardAudit
-	BRAudit
-	EVAudit
-	Auditor
+	NetSecAudit
+	TLSBRAudit
+	TLSEVGAudit
+	SMIMEBRAudit
+	AuditFirm
 	StandardAuditType
 	StandardAuditStatementDt
 	PEMInfo

@@ -5,8 +5,9 @@
 package crl
 
 import (
-	"github.com/mozilla/CCADB-Tools/capi/lib/certificateUtils"
 	"testing"
+
+	"github.com/mozilla/CCADB-Tools/capi/lib/certificateUtils"
 )
 
 var AmazonRootCA1 = `-----BEGIN CERTIFICATE-----

@@ -7,13 +7,14 @@ package service
 import (
 	"crypto/x509"
 	"fmt"
+	"time"
+
 	"github.com/mozilla/CCADB-Tools/capi/lib/certificateUtils"
 	"github.com/mozilla/CCADB-Tools/capi/lib/expiration"
 	"github.com/mozilla/CCADB-Tools/capi/lib/model"
 	"github.com/mozilla/CCADB-Tools/capi/lib/revocation/crl"
 	"github.com/mozilla/CCADB-Tools/capi/lib/revocation/ocsp"
 	log "github.com/sirupsen/logrus"
-	"time"
 )
 
 func VerifyChain(chain []*x509.Certificate) model.ChainResult {

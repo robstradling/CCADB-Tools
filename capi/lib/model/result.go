@@ -7,6 +7,7 @@ package model
 import (
 	"crypto/x509"
 	"encoding/json"
+
 	"github.com/mozilla/CCADB-Tools/capi/lib/certificateUtils"
 	"github.com/mozilla/CCADB-Tools/capi/lib/expiration"
 	"github.com/mozilla/CCADB-Tools/capi/lib/revocation/crl"

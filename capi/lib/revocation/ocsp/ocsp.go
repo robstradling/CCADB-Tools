@@ -9,13 +9,14 @@ import (
 	"crypto/x509"
 	"encoding/json"
 	"fmt"
-	"github.com/pkg/errors"
-	ocsplib "golang.org/x/crypto/ocsp"
-	"io"
+	"io/ioutil"
 	"net/http"
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/pkg/errors"
+	ocsplib "golang.org/x/crypto/ocsp"
 )
 
 // RFC 6960

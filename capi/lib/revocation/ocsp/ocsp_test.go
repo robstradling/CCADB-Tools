@@ -9,11 +9,12 @@ import (
 	"crypto/x509"
 	"encoding/json"
 	"encoding/pem"
-	"github.com/mozilla/CCADB-Tools/capi/lib/certificateUtils"
-	"golang.org/x/crypto/ocsp"
-	"io"
+	"io/ioutil"
 	"net/http"
 	"testing"
+
+	"github.com/mozilla/CCADB-Tools/capi/lib/certificateUtils"
+	"golang.org/x/crypto/ocsp"
 )
 
 var AmazonRootCA1 = `-----BEGIN CERTIFICATE-----
