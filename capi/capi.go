@@ -10,17 +10,6 @@ import (
 	"encoding/json"
 	"encoding/pem"
 	"fmt"
-	"github.com/mozilla/CCADB-Tools/capi/lib/ccadb"
-	"github.com/mozilla/CCADB-Tools/capi/lib/certificateUtils"
-	"github.com/mozilla/CCADB-Tools/capi/lib/lint/certlint"
-	"github.com/mozilla/CCADB-Tools/capi/lib/lint/x509lint"
-	"github.com/mozilla/CCADB-Tools/capi/lib/model"
-	"github.com/mozilla/CCADB-Tools/capi/lib/service"
-	"github.com/natefinch/lumberjack"
-	log "github.com/sirupsen/logrus"
-	"github.com/throttled/throttled"
-	"github.com/throttled/throttled/store/memstore"
-	"golang.org/x/crypto/ssh/terminal"
 	"io"
 	"io/ioutil"
 	"net"
@@ -32,6 +21,17 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+
+	"github.com/mozilla/CCADB-Tools/capi/lib/ccadb"
+	"github.com/mozilla/CCADB-Tools/capi/lib/certificateUtils"
+	"github.com/mozilla/CCADB-Tools/capi/lib/lint/pkimetal"
+	"github.com/mozilla/CCADB-Tools/capi/lib/model"
+	"github.com/mozilla/CCADB-Tools/capi/lib/service"
+	"github.com/natefinch/lumberjack"
+	log "github.com/sirupsen/logrus"
+	"github.com/throttled/throttled"
+	"github.com/throttled/throttled/store/memstore"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 func main() {
@@ -453,7 +453,6 @@ func lintFromSubject(w http.ResponseWriter, req *http.Request) {
 	encoder.Encode(result)
 	w.WriteHeader(http.StatusOK)
 }
-
 func lintSubject(subject string) model.ChainLintResult {
 	result := model.NewChainLintResult(subject)
 	if subject == "" {
@@ -480,37 +479,26 @@ func lintSubject(subject string) model.ChainLintResult {
 		})
 		return result
 	}
-	var chainWithoutRoot []*x509.Certificate
-	if certificateUtils.IncludesTrustAnchor(chain) {
-		chainWithoutRoot = chain[:len(chain)-1]
-	} else {
-		chainWithoutRoot = chain
-	}
-	clint, err := certlint.LintCerts(chainWithoutRoot)
-	if err != nil {
-		result.Error = err.Error()
-		result.Opinion.Result = model.FAIL
-		result.Opinion.Errors = append(result.Opinion.Errors, model.Concern{
-			Raw:            err.Error(),
-			Interpretation: "An internal error appears to have occurred while using certlint",
-			Advise:         "Please report this error.",
-		})
-		return result
-	}
-	xlint, err := x509lint.LintChain(chainWithoutRoot)
-	if err != nil {
-		result.Error = err.Error()
-		result.Opinion.Result = model.FAIL
-		result.Opinion.Errors = append(result.Opinion.Errors, model.Concern{
-			Raw:            err.Error(),
-			Interpretation: "An internal error appears to have occurred while using x509lint",
-			Advise:         "Please report this error.",
-		})
-		return result
-	}
+var chainWithoutRoot []*x509.Certificate
+if certificateUtils.IncludesTrustAnchor(chain) {
+    chainWithoutRoot = chain[:len(chain)-1]
+} else {
+    chainWithoutRoot = chain
+}
+results, err := pkimetal.LintChain(chainWithoutRoot)
+if err != nil {
+    result.Error = err.Error()
+    result.Opinion.Result = model.FAIL
+    result.Opinion.Errors = append(result.Opinion.Errors, model.Concern{
+        Raw:            err.Error(),
+        Interpretation: "An internal error appears to have occurred while linting the certificate chain",
+        Advise:         "Please report this error.",
+    })
+    return result
+}
 	lintResults := make([]model.CertificateLintResult, len(chainWithoutRoot))
 	for i := 0; i < len(lintResults); i++ {
-		lintResults[i] = model.NewCertificateLintResult(chainWithoutRoot[i], xlint[i], clint[i])
+		lintResults[i] = model.NewCertificateLintResult(chainWithoutRoot[i], results[i])
 	}
 	result.Finalize(lintResults[0], lintResults[1:])
 	return result

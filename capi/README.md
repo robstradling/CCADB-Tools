@@ -110,7 +110,7 @@ A certificate chain, in the context of the `revoked` test suite, is considered t
 
 ## Linting
 
-This tool supports linting certificate chains using the [x509lint](https://github.com/kroeckx/x509lint) tool and the [certlint](https://github.com/certlint/certlint) tool.
+This tool supports linting certificate chains using the various linters that are integrated into the [pkimetal](https://github.com/pkimetal/pkimetal) meta-linter.
 
 The following three endpoints are provided:
 	
@@ -138,37 +138,38 @@ The following is an example JSON structure of a single linter result. If an endp
 {
     "Subject": "https://ssltest-active.actalis.it/",
     "Leaf": {
-        "X509Lint": {
-            "Errors": [],
-            "Warnings": [],
+        "PkiMetal": {
             "Info": [
-                "Subject has a deprecated CommonName"
+                "[badkeys] Key ok",
+                "[certlint] TLS Server certificate identified",
+                "[ctlint] Certificate with embedded SCT list identified",
+                "[ctlint] SCT has a valid signature from DigiCert Sphinx 2026h2",
+                "[ctlint] SCT has a valid signature from Google Xenon 2026h2",
+                "[ctlint] SCT has a valid signature from Sectigo Mammoth 2026h2",
+                "[dwklint] Public Key is not a Debian weak key",
+                "[ftfy] ftfy not invoked, because Subject DN only contains printable ASCII characters",
+                "[pkilint] pkix.subject_key_identifier_method_1_identified (certificate.tbsCertificate.extensions.7.extnValue.subjectKeyIdentifier) - The Subject key identifier was calculated using the first algorithm defined in RFC 5280",
+                "[pwnedkeys] Public Key is not pwned",
+                "[rocacheck] Public Key is not a ROCA weak key",
+                "[x509lint] Checking as leaf certificate",
+                "[x509lint] Subject has a deprecated CommonName"
             ],
+            "Notice": [],
+            "Warning": [
+                "[pkilint] cabf.serverauth.subscriber.subject_key_identifier_extension_present (certificate.tbsCertificate.extensions) - A discouraged element is present",
+                "[pkilint] cabf.serverauth.ov.common_name_attribute_present (certificate.tbsCertificate.subject.rdnSequence) - A discouraged element is present",
+                "[pkilint] cabf.serverauth.subscriber_first_policy_oid_not_reserved (certificate.tbsCertificate.extensions.4.extnValue.certificatePolicies) - Validates that the certificate policy OID(s) conform to BR 7.1.2.7.9.",
+                "[pkilint] cabf.serverauth.subscriber_rsa_digitalsignature_and_keyencipherment_present (certificate.tbsCertificate.extensions.8.extnValue.keyUsage) - Validates that the content of the key usage extension conforms with BR 7.1.2.7.11.",
+                "[pkilint] cabf.serverauth.certificate_policy_qualifier_present (certificate.tbsCertificate.extensions.4.extnValue.certificatePolicies.0.policyQualifiers.0) - Validates that the inclusion of policy qualifiers is in conformance with BR 7.1.2.3.2, 7.1.2.10.5, and 7.1.2.7.9.",
+                "[zlint] w_subject_common_name_included - Subscriber Certificate: commonName is NOT RECOMMENDED.",
+                "[zlint] w_ext_subject_key_identifier_not_recommended_subscriber - Subscriber certificates use of Subject Key Identifier is NOT RECOMMENDED"
+            ],
+            "Error": [],
+            "Bug": [],
+            "Fatal": [],
             "CmdError": null // describes an error that resulted from running the tool itself. E.G. bad command line arguments
         },
-        "Certlint": {
-            "Certlint": {
-                "Bug": [],
-                "Info": [],
-                "Notices": [],
-                "Warnings": [],
-                "Errors": [],
-                "Fatal": [],
-                "CmdError": null // describes an error that resulted from running the tool itself. E.G. bad command line arguments
-            },
-            "Cablint": {
-                "Bug": [],
-                "Info": [
-                    "TLS Server certificate identified\tcertlint262274680"
-                ],
-                "Notices": [],
-                "Warnings": [],
-                "Errors": [],
-                "Fatal": [],
-                "CmdError": null // describes an error that resulted from running the tool itself. E.G. bad command line arguments
-            }
-        },
-        "CrtSh": "https://crt.sh/?q=EE5778EE98C58D73D3EA555A26F381A610C71AF208CD024159BDE0646849DC64"
+        "CrtSh": "https://crt.sh/?q=9324C7E7E563CF13E87BB3D6C0FA6A57BA2B35D3DE8B72908BD309F24702B08F"
     },
     "Intermediates": [],
     "Opinion": {
@@ -181,14 +182,6 @@ The following is an example JSON structure of a single linter result. If an endp
 
 #### Interpreting Linter Results
 
-##### x509lint
+See documentation for each of the [supported linters](https://github.com/pkimetal/pkimetal?tab=readme-ov-file#supported-linters).
 
-The full list of possible error messages may be found [here](https://github.com/kroeckx/x509lint/blob/master/messages.c). All messages prefixed with `E:`, except for [`E: Fails decoding the characterset`](https://github.com/kroeckx/x509lint/blob/33c4b3bc36d2cd911d7eca7528c049c023031508/messages.c#L35) will result in a `FAIL` of that particular certificate.
-
-All errors, warnings, and infos provided by x509lint are mapped directly to the `Errors`, `Warnings`, and `Info` arrays.
-
-##### certlint
-
-A description of the output of certlint (and its subtool, cablint) can be found [here](https://github.com/certlint/certlint#output). Any error messages marked as bug, error, or fatal will result in a `FAIL` of that particular certificate.
-
-All bugs, info, notices, warnings, errors, and fatal output are mapped to the `Bug`, `Info`, `Notices`, `Warnings`, `Errors`, and `Fatal` arrays.
+Any linter finding with a severity of `fatal`, `bug`, or `error`, will result in a `FAIL` of that particular certificate.

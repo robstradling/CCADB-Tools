@@ -7,12 +7,13 @@ package crl
 import (
 	"crypto/x509"
 	"fmt"
-	"github.com/pkg/errors"
 	"io/ioutil"
 	"math/big"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 type CRLStatus string
