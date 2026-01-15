@@ -6,6 +6,7 @@ package service
 
 import (
 	"fmt"
+
 	"github.com/mozilla/CCADB-Tools/capi/lib/expiration"
 	"github.com/mozilla/CCADB-Tools/capi/lib/model"
 	"github.com/mozilla/CCADB-Tools/capi/lib/revocation/crl"

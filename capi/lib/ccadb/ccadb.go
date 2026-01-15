@@ -10,10 +10,11 @@ import (
 	"encoding/csv"
 	"encoding/pem"
 	"fmt"
+	"net/http"
+
 	"github.com/mozilla/CCADB-Tools/capi/lib/certificateUtils"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
-	"net/http"
 )
 
 const ReportURL = "https://ccadb.my.salesforce-sites.com/mozilla/IncludedCACertificateReportPEMCSV"

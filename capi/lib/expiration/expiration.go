@@ -6,6 +6,7 @@ package expiration
 
 import (
 	"crypto/x509"
+
 	"github.com/mozilla/CCADB-Tools/capi/lib/expiration/certutil"
 	"github.com/pkg/errors"
 )
