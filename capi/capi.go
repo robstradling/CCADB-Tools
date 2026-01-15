@@ -453,7 +453,6 @@ func lintFromSubject(w http.ResponseWriter, req *http.Request) {
 	encoder.Encode(result)
 	w.WriteHeader(http.StatusOK)
 }
-
 func lintSubject(subject string) model.ChainLintResult {
 	result := model.NewChainLintResult(subject)
 	if subject == "" {
@@ -480,18 +479,23 @@ func lintSubject(subject string) model.ChainLintResult {
 		})
 		return result
 	}
-	chainWithoutRoot := chain[:len(chain)-1]
-	results, err := pkimetal.LintChain(chainWithoutRoot)
-	if err != nil {
-		result.Error = err.Error()
-		result.Opinion.Result = model.FAIL
-		result.Opinion.Errors = append(result.Opinion.Errors, model.Concern{
-			Raw:            err.Error(),
-			Interpretation: "An internal error appears to have occurred while using pkimetal",
-			Advise:         "Please report this error.",
-		})
-		return result
-	}
+var chainWithoutRoot []*x509.Certificate
+if certificateUtils.IncludesTrustAnchor(chain) {
+    chainWithoutRoot = chain[:len(chain)-1]
+} else {
+    chainWithoutRoot = chain
+}
+results, err := pkimetal.LintChain(chainWithoutRoot)
+if err != nil {
+    result.Error = err.Error()
+    result.Opinion.Result = model.FAIL
+    result.Opinion.Errors = append(result.Opinion.Errors, model.Concern{
+        Raw:            err.Error(),
+        Interpretation: "An internal error appears to have occurred while linting the certificate chain",
+        Advise:         "Please report this error.",
+    })
+    return result
+}
 	lintResults := make([]model.CertificateLintResult, len(chainWithoutRoot))
 	for i := 0; i < len(lintResults); i++ {
 		lintResults[i] = model.NewCertificateLintResult(chainWithoutRoot[i], results[i])
