@@ -34,7 +34,7 @@ type lintResult struct {
 	Severity string
 }
 
-const pkimetalURL = "https://pkimet.al/"
+const pkimetalURL = "https://dev.pkimet.al"
 
 var httpClient *http.Client
 
