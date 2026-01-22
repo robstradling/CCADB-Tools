@@ -21,9 +21,9 @@ const (
 )
 
 type Entry struct {
-    IssuerCommonName       string `csv:"Certificate Issuer Common Name" json:"issuerCN"`
+	IssuerCommonName       string `csv:"Certificate Issuer Common Name" json:"issuerCN"`
 	Serial                 string `csv:"Certificate Serial Number" json:"serial"`
-    Fingerprint            string `csv:"SHA-256 Fingerprint" json:"sha_256"`
+	Fingerprint            string `csv:"SHA-256 Fingerprint" json:"sha_256"`
 	RevocationStatus       string `csv:"OneCRL Status" json:"revocationStatus"`
 	IssuerOrganizationName string `csv:"Certificate Issuer Organization" json:"issuerON"`
 }

@@ -24,7 +24,7 @@ import (
 )
 
 const nightly = "https://hg.mozilla.org/mozilla-unified/raw-file/central/security/certverifier/ExtendedValidation.cpp"
-const beta    = "https://hg.mozilla.org/mozilla-unified/raw-file/beta/security/certverifier/ExtendedValidation.cpp"
+const beta = "https://hg.mozilla.org/mozilla-unified/raw-file/beta/security/certverifier/ExtendedValidation.cpp"
 const release = "https://hg.mozilla.org/mozilla-unified/raw-file/release/security/certverifier/ExtendedValidation.cpp"
 
 func get(url string) ([]byte, error) {
@@ -100,18 +100,18 @@ func deser(src []byte) ([]*EVInfo, error) {
 				return kEVinfos, err
 			}
 			kEVinfos = append(kEVinfos, evinfo)
-  // After a struct '}', accept either ',' (more) or '}' (end-of-array)
-      if b, err = consumeWhiteSpace(r); err != nil {
-        return kEVinfos, err
-      }
-      if b == ',' {
-        continue
-      }
-      if b == '}' {
-        return kEVinfos, nil
-      }
-      return kEVinfos, errors.New(fmt.Sprintf(`received an unexpected character after EVInfo, got "%s"`, string(b)))
-			case '}':
+			// After a struct '}', accept either ',' (more) or '}' (end-of-array)
+			if b, err = consumeWhiteSpace(r); err != nil {
+				return kEVinfos, err
+			}
+			if b == ',' {
+				continue
+			}
+			if b == '}' {
+				return kEVinfos, nil
+			}
+			return kEVinfos, errors.New(fmt.Sprintf(`received an unexpected character after EVInfo, got "%s"`, string(b)))
+		case '}':
 			// The end of the kEVinfo array
 			return kEVinfos, nil
 		default:
