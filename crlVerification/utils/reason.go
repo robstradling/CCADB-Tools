@@ -149,4 +149,3 @@ func asn1ToRevocationReason(data []byte) RevocationReason {
 	}
 	return RevocationReason(reasonCode)
 }
-

@@ -15,11 +15,11 @@ type Pair struct {
 // MapPairs map all of the entries in certdata.txt to entries in the CCADB
 // report. Entries are matched together if they:
 //
-// 1. Have the same serial number (normalized for leading zeroes)
-// 	or
-// 2. They have the exact same PEM.
-//	or
-// 3. They have the exact same Common Name.
+//  1. Have the same serial number (normalized for leading zeroes)
+//     or
+//  2. They have the exact same PEM.
+//     or
+//  3. They have the exact same Common Name.
 //
 // Any entries for which a mapping could not be made are returned
 // in the 'rest' slice.
