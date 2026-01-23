@@ -11,11 +11,14 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	ocsplib "golang.org/x/crypto/ocsp"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/pkg/errors"
+	ocsplib "golang.org/x/crypto/ocsp"
 )
 
 // RFC 6960
@@ -199,7 +202,7 @@ func newOCSPResponse(certificate, issuer *x509.Certificate, responder string) (r
 		return
 	}
 	defer ret.Body.Close()
-	httpResp, err := ioutil.ReadAll(ret.Body)
+	httpResp, err := io.ReadAll(ret.Body)
 	if err != nil {
 		response.Status = BadResponse
 		response.Error = err.Error()

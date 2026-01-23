@@ -8,6 +8,7 @@ import (
 	"crypto/x509"
 	"encoding/json"
 	"encoding/pem"
+
 	"github.com/mozilla/CCADB-Tools/capi/lib/certificateUtils"
 )
 

@@ -10,19 +10,7 @@ import (
 	"encoding/json"
 	"encoding/pem"
 	"fmt"
-	"github.com/mozilla/CCADB-Tools/capi/lib/ccadb"
-	"github.com/mozilla/CCADB-Tools/capi/lib/certificateUtils"
-	"github.com/mozilla/CCADB-Tools/capi/lib/lint/certlint"
-	"github.com/mozilla/CCADB-Tools/capi/lib/lint/x509lint"
-	"github.com/mozilla/CCADB-Tools/capi/lib/model"
-	"github.com/mozilla/CCADB-Tools/capi/lib/service"
-	"github.com/natefinch/lumberjack"
-	log "github.com/sirupsen/logrus"
-	"github.com/throttled/throttled"
-	"github.com/throttled/throttled/store/memstore"
-	"golang.org/x/crypto/ssh/terminal"
 	"io"
-	"io/ioutil"
 	"net"
 	"net/http"
 	"net/http/httputil"
@@ -32,6 +20,17 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+
+	"github.com/mozilla/CCADB-Tools/capi/lib/ccadb"
+	"github.com/mozilla/CCADB-Tools/capi/lib/certificateUtils"
+	"github.com/mozilla/CCADB-Tools/capi/lib/lint/pkimetal"
+	"github.com/mozilla/CCADB-Tools/capi/lib/model"
+	"github.com/mozilla/CCADB-Tools/capi/lib/service"
+	"github.com/natefinch/lumberjack"
+	log "github.com/sirupsen/logrus"
+	"github.com/throttled/throttled"
+	"github.com/throttled/throttled/store/memstore"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 func main() {
@@ -132,7 +131,7 @@ func verify(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 	subject := s[0]
-	rawRoot, err := ioutil.ReadAll(req.Body)
+	rawRoot, err := io.ReadAll(req.Body)
 	if err != nil {
 		responseCode = http.StatusBadRequest
 		response = "failed to read request body, " + err.Error()
@@ -266,7 +265,7 @@ func streamJsonArray(w io.Writer, answers chan model.TestWebsiteResult, total in
 }
 
 func verifyFromCertificateDetails(resp http.ResponseWriter, req *http.Request) {
-	body, err := ioutil.ReadAll(req.Body)
+	body, err := io.ReadAll(req.Body)
 	if err != nil {
 		//@TODO
 	}
@@ -381,7 +380,7 @@ func lintFromCCADB(resp http.ResponseWriter, _ *http.Request) {
 }
 
 func lintFromCertificateDetails(resp http.ResponseWriter, req *http.Request) {
-	body, err := ioutil.ReadAll(req.Body)
+	body, err := io.ReadAll(req.Body)
 	if err != nil {
 		//@TODO
 	}
@@ -448,10 +447,10 @@ func lintFromSubject(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	result := lintSubject(s[0])
+	w.Header().Set("Content-Type", "application/json")
 	encoder := json.NewEncoder(w)
 	encoder.SetIndent("", "  ")
 	encoder.Encode(result)
-	w.WriteHeader(http.StatusOK)
 }
 
 func lintSubject(subject string) model.ChainLintResult {
@@ -480,32 +479,26 @@ func lintSubject(subject string) model.ChainLintResult {
 		})
 		return result
 	}
-	chainWithoutRoot := chain[:len(chain)-1]
+	var chainWithoutRoot []*x509.Certificate
+	if certificateUtils.IncludesTrustAnchor(chain) {
+		chainWithoutRoot = chain[:len(chain)-1]
+	} else {
+		chainWithoutRoot = chain
+	}
 	clint, err := certlint.LintCerts(chainWithoutRoot)
 	if err != nil {
 		result.Error = err.Error()
 		result.Opinion.Result = model.FAIL
 		result.Opinion.Errors = append(result.Opinion.Errors, model.Concern{
 			Raw:            err.Error(),
-			Interpretation: "An internal error appears to have occurred while using certlint",
-			Advise:         "Please report this error.",
-		})
-		return result
-	}
-	xlint, err := x509lint.LintChain(chainWithoutRoot)
-	if err != nil {
-		result.Error = err.Error()
-		result.Opinion.Result = model.FAIL
-		result.Opinion.Errors = append(result.Opinion.Errors, model.Concern{
-			Raw:            err.Error(),
-			Interpretation: "An internal error appears to have occurred while using x509lint",
+			Interpretation: "An internal error appears to have occurred while using pkimetal",
 			Advise:         "Please report this error.",
 		})
 		return result
 	}
 	lintResults := make([]model.CertificateLintResult, len(chainWithoutRoot))
 	for i := 0; i < len(lintResults); i++ {
-		lintResults[i] = model.NewCertificateLintResult(chainWithoutRoot[i], xlint[i], clint[i])
+		lintResults[i] = model.NewCertificateLintResult(chainWithoutRoot[i], results[i])
 	}
 	result.Finalize(lintResults[0], lintResults[1:])
 	return result

@@ -6,6 +6,7 @@ package service
 
 import (
 	"fmt"
+
 	"github.com/mozilla/CCADB-Tools/capi/lib/expiration"
 	"github.com/mozilla/CCADB-Tools/capi/lib/model"
 	"github.com/mozilla/CCADB-Tools/capi/lib/revocation/crl"
@@ -110,8 +111,8 @@ type CertType string
 
 const (
 	Root         CertType = "root"
-	Intermediate          = "intermediate"
-	Leaf                  = "leaf"
+	Intermediate CertType = "intermediate"
+	Leaf         CertType = "leaf"
 )
 
 func assertNotRevoked(cert model.CertificateResult, t CertType) (opinion model.Opinion) {

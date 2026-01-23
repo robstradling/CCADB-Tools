@@ -11,9 +11,12 @@ import (
 	"encoding/pem"
 	"github.com/mozilla/CCADB-Tools/capi/lib/certificateUtils"
 	"golang.org/x/crypto/ocsp"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"testing"
+
+	"github.com/mozilla/CCADB-Tools/capi/lib/certificateUtils"
+	"golang.org/x/crypto/ocsp"
 )
 
 var AmazonRootCA1 = `-----BEGIN CERTIFICATE-----
@@ -361,7 +364,7 @@ func TestBadASN1(t *testing.T) {
 		t.Fatal(err)
 	}
 	s := bytes.NewBuffer([]byte{})
-	pem.Encode(s, &pem.Block{"CERTIFICATE", nil, chain[0].Raw})
+	pem.Encode(s, &pem.Block{Type: "CERTIFICATE", Bytes: chain[0].Raw})
 	t.Log(s.String())
 	b := responseAsBytes(chain[0], chain[1], chain[0].OCSPServer[0])
 	t.Log(chain[0].OCSPServer[0])
@@ -384,7 +387,7 @@ func responseAsBytes(certificate, issuer *x509.Certificate, responder string) []
 		panic(err)
 	}
 	defer ret.Body.Close()
-	httpResp, err := ioutil.ReadAll(ret.Body)
+	httpResp, err := io.ReadAll(ret.Body)
 	if err != nil {
 		panic(err)
 	}

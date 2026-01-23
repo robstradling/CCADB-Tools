@@ -7,6 +7,7 @@ package model
 import (
 	"crypto/x509"
 	"encoding/json"
+
 	"github.com/mozilla/CCADB-Tools/capi/lib/certificateUtils"
 	"github.com/mozilla/CCADB-Tools/capi/lib/expiration"
 	"github.com/mozilla/CCADB-Tools/capi/lib/revocation/crl"
@@ -97,11 +98,11 @@ type CertificateResult struct {
 	Expiration        expiration.ExpirationStatus
 }
 
-func NewCeritifcateResult(certificate *x509.Certificate, ocspResonse []ocsp.OCSP, crlStatus []crl.CRL, expirationStatus expiration.ExpirationStatus) CertificateResult {
+func NewCertificateResult(certificate *x509.Certificate, ocspResonse []ocsp.OCSP, crlStatus []crl.CRL, expirationStatus expiration.ExpirationStatus) CertificateResult {
 	return CertificateResult{
 		certificate,
 		certificateUtils.FingerprintOf(certificate),
-		"https://crt.sh/?q=" + certificateUtils.FingerprintOf(certificate),
+		"https://crt.sh/?sha256=" + certificateUtils.FingerprintOf(certificate),
 		certificate.Subject.CommonName,
 		ocspResonse,
 		crlStatus,

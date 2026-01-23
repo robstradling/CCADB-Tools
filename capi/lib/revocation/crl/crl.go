@@ -8,20 +8,22 @@ import (
 	"crypto/x509"
 	"fmt"
 	"github.com/pkg/errors"
-	"io/ioutil"
+	"io"
 	"math/big"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 type CRLStatus string
 
 const (
 	Good        CRLStatus = "good"
-	Revoked               = "revoked"
-	Unchecked             = "unchecked"
-	BadResponse           = "badResponse"
+	Revoked     CRLStatus = "revoked"
+	Unchecked   CRLStatus = "unchecked"
+	BadResponse CRLStatus = "badResponse"
 )
 
 type CRL struct {
@@ -48,8 +50,8 @@ func queryCRLs(certificate *x509.Certificate) []CRL {
 		statuses[i] = newCRL(certificate.SerialNumber, url)
 	}
 	if disagreement := allAgree(statuses); disagreement != nil {
-		for _, status := range statuses {
-			status.Error = disagreement.Error()
+		for i := 0; i < len(statuses); i++ {
+			statuses[i].Error = disagreement.Error()
 		}
 	}
 	return statuses
@@ -97,7 +99,7 @@ func newCRL(serialNumber *big.Int, distributionPoint string) (crl CRL) {
 		crl.Status = BadResponse
 		return
 	}
-	b, err := ioutil.ReadAll(raw.Body)
+	b, err := io.ReadAll(raw.Body)
 	if err != nil {
 		crl.Error = errors.Wrapf(err, "failed to read response from CRL distribution point %v", distributionPoint).Error()
 		crl.Status = BadResponse

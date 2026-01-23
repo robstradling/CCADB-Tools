@@ -6,6 +6,7 @@ package expiration
 
 import (
 	"crypto/x509"
+
 	"github.com/mozilla/CCADB-Tools/capi/lib/expiration/certutil"
 	"github.com/pkg/errors"
 )
@@ -14,9 +15,9 @@ type Status string
 
 const (
 	Valid              Status = "valid"
-	Expired                   = "expired"
-	IssuerUnknown             = "issuerUnknown"
-	UnexpectedResponse        = "unexpectedResponse"
+	Expired            Status = "expired"
+	IssuerUnknown      Status = "issuerUnknown"
+	UnexpectedResponse Status = "unexpectedResponse"
 )
 
 func toStatus(nssResponse string) (Status, bool) {
